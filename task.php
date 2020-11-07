@@ -26,18 +26,24 @@ $error_message = array();
 if ( !empty($_POST['btn_submit'])) {
 
 
-//名前が未入力だと表示される
+//名前が未入力だと表示される、echoの消去
 	if( empty($_POST['view_name']) ) {
-	 echo	($error_message[] = '名前を入力してください');
+	 	$error_message[] = '名前を入力してください';
 	};
-	//内容が書かれてと表示される
+	//未入力だと表示される
 	if( empty($_POST['message']) ) {
-	 echo	($error_message[] = '内容が書かれていです！');
+	 $error_message[] = '内容が書かれていです';
 	};
+
+	
+		//変更点 $error_messageがからだったら動かない
+	if( empty($error_message) ) {
+		
 
 	// ファイルを開いて書き込んでねという処理を行っている
 	// 	Q なぜ変数を用いてfopenを書いているか？
 	//  Q2  fopenの記述方法  "a"とは何か？
+
 	if( $file_handle = fopen( FILENAME, "a")) {
 
 
@@ -58,6 +64,7 @@ if ( !empty($_POST['btn_submit'])) {
 		// Qなぜfclose関数で閉じているか
 		fclose( $file_handle);
 	};
+ };
 };
 
 //
@@ -114,6 +121,15 @@ if ($_SERVER['REQUEST_METHOD'] ==='POST') {
 	<title>Document</title>
 </head>
 <body>
+	
+	
+<!--変更点  -->
+<?php if (!empty($error_message)):?>
+ <?php foreach($error_message as $value):?>
+ <p><?php echo $value; ?></p>
+ <?php endforeach ?>
+ <?php endif ?>
+ 
 	<form method="post" >
 	<div>
 		<label for ="">表示名</label>
