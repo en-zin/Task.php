@@ -17,6 +17,12 @@ $message_arry = array();
 $error_message = array();
 
 
+$name = $_POST['view_name'];
+$txt =  $_POST['message'];
+$limit_name = 10;
+$limit_message = 50;
+$limit_display = 5;
+
 
 // method属性がpostであるフォームから送られた情報
 // Q.なぜ!emptyの否定なのか。
@@ -27,9 +33,22 @@ if ( !empty($_POST['btn_submit'])) {
 	if( empty($_POST['view_name']) ) {
 	 	$error_message[] = '名前を入力してください';
 	};
+
 	//未入力だと表示される
 	if( empty($_POST['message']) ) {
 	 $error_message[] = '内容が書かれていです';
+	};
+
+
+	//投稿された名前が制限を超えたら表示される
+	//Q mb_strlenを使うことで何をしているか
+	if(mb_strlen($name) >= $limit_name) {
+			$error_message[] = '名前は10文字以内でお願いします';
+	};
+
+	//投稿された内容が制限を超えたら表示される
+	if(mb_strlen($txt) >= $limit_message) {
+			$error_message[] = '内容は50文字以内でお願いします';
 	};
 
 
@@ -106,7 +125,6 @@ if($file_handle = fopen(FILENAME,'r')) {
 		// Q array_unshiftについてggrks
 		array_unshift($message_arry,$message);
 		// echo $data."<br>";
-
 	}
 	fclose($file_handle);
 };
@@ -142,19 +160,26 @@ if($file_handle = fopen(FILENAME,'r')) {
  <?php endif ?>
 
 
-<form method="post" >
+ <script>
+ function confirm_test(){
+	 let select = confirm("送信しますか")
+	 return select;
+ }
+ </script>
+
+
+	<form method="post" onsubmit="return confirm_test()">
 	<div>
-	<label for ="">表示名</label>
+		<label for ="">表示名</label>
 	  <input id="" type="text" name="view_name" value="">
-  　　　　</div>
+  </div>
  <div>
 	<label for="message">一言メッセージ</label>
 	<textarea id= "message" name ="message"></textarea>
  </div>
  <input type="submit" name="btn_submit" value="書き込む" id = "btn">
  </form>
-
- <hr>
+<hr>
  <section>
 
 	<!-- message_arryに文字が代入されたら起動する -->
@@ -166,9 +191,9 @@ if($file_handle = fopen(FILENAME,'r')) {
 	 <article>
 		 <div class="info">
 
-	 		<time>
+		 		<time>
 			 <?php echo date('Y年m月d日 H:i',strtotime($value['post_date']));?>
-			</time>
+			 </time>
 
 			 <h2><?php echo $value ['view_name'];?></h2>
 
