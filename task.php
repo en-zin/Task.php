@@ -15,12 +15,25 @@ $file_handle =null;
 $split_data = null;
 $message = array();
 $message_arry = array();
+$error_message = array();
+
 
 
 // method属性がpostであるフォームから送られた情報
 // Q.なぜ!emptyの否定なのか。
+
+
 if ( !empty($_POST['btn_submit'])) {
 
+
+//名前が未入力だと表示される
+	if( empty($_POST['view_name']) ) {
+	 echo	($error_message[] = '名前を入力してください');
+	};
+	//内容が書かれてと表示される
+	if( empty($_POST['message']) ) {
+	 echo	($error_message[] = '内容が書かれていです！');
+	};
 
 	// ファイルを開いて書き込んでねという処理を行っている
 	// 	Q なぜ変数を用いてfopenを書いているか？
@@ -101,7 +114,7 @@ if ($_SERVER['REQUEST_METHOD'] ==='POST') {
 	<title>Document</title>
 </head>
 <body>
-	<form method="post">
+	<form method="post" >
 	<div>
 		<label for ="">表示名</label>
 	  <input id="" type="text" name="view_name" value="">
