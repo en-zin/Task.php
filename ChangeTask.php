@@ -36,14 +36,22 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST') {
 				//両方空でなければ起動する
 				if(!empty($title) && !empty($text)) {
 
-    				$DATA = [$id, $title, $text, $date];
+    			if($file_handle = fopen($Fail,'r')) {
 
-    				$BOARD[] = $DATA;
 
-    				file_put_contents($Fail,json_encode($BOARD, JSON_UNESCAPED_UNICODE));
+              // 一行ずつ読み込んでいる状態
+              // Q なぜループをさせているか fgetについて
+              // for分でも掛ける希ガスでもわからない
+              while ($data = fgets($file_handle)) {
+                
+                  $DATA = [$id, $title, $text, $date];
 
-    				header("Location:" . $_SERVER["SCRIPT_NAME"]);
-						exit;
+                  $BOARD[] = $DATA;
+
+                  fwrite($file_handle,json_encode($BOARD, JSON_UNESCAPED_UNICODE ));
+              }
+              fclose($file_handle);
+          };
 
   			}	else {
     					if(empty($_POST['title'])) $error_message[] = 'タイトルを入力してください';
@@ -69,7 +77,7 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST') {
 					<p>	<?php echo $value ?></p>
 			<?php endforeach ?>
 
-  <form action="" method="post" onsubmit="return confirm_test()">
+  <form action="" method="post" onsubmit="return submitChk()">
 
      	<div>
      			<label for="view_name">タイトル</label>
