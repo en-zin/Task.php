@@ -43,7 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST') {
               // Q なぜループをさせているか fgetについて
               // for分でも掛ける希ガスでもわからない
               while ($data = fgets($file_handle)) {
-                
+
                   $DATA = [$id, $title, $text, $date];
 
                   $BOARD[] = $DATA;
@@ -55,8 +55,8 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST') {
 
   			}	else {
     					if(empty($_POST['title'])) $error_message[] = 'タイトルを入力してください';
-							if(empty($_POST['txt'])) $error_message[] = '記事を入力してください';
-					};
+						if(empty($_POST['txt'])) $error_message[] = '記事を入力してください';
+				};
 
 		};
 
