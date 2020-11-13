@@ -15,11 +15,11 @@ $board = [];
 $error_message = [];
 $limit_coment = 50;
 
-echo $title;
-echo $text;
+$erase = [];
+
 if (file_exists($fail)) {
     $board = json_decode(file_get_contents($fail));
-}
+};
 
 if(mb_strlen($coment) >= $limit_coment) $error_message[] = '50文字以内でコメントを書いてください';
 
@@ -28,22 +28,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if(empty($error_message)) {
 
         if(!empty($coment)) {
-            $data = [$subId, $coment, $date,];
+
+            $data = [$subId, $id, $coment, $date,];
 
             $board[] = $data;
 
             file_put_contents($fail,json_encode($board, JSON_UNESCAPED_UNICODE));
 
-            header('Location:' .$_SERVER['QUERY_STRING']);
-            exit;
+            header("Location:" . $_SERVER['REQUEST_URI']);
+			exit;
+
+        } else if( !empty($_POST['erase_submit'])) {
+
+            $board = '';
 
 
         } else {
+
             if(empty($coment)) $error_message[] = "コメントを記入してください";
+
         };
 
     };
+
 };
+
+
 
 
 ?>
@@ -63,6 +73,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <a href="http://localhost/Task/task.php">PHPニュース</a>
     </h1>
 
+    <p><?php echo $title?></p>
+    <p><?php echo $text?></p>
+
 	<?php foreach($error_message as $value): ?>
 		<p>
 			<?php echo $value ?>
@@ -72,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
 <hr>
-    <form action="" method="post" onsubmit="return confirm_test()">
+    <form action="" method="post" >
      	<div>
      			<label for="coment">コメント：</label>
      			<textarea name="coment" id="coment" cols="20" rows="5"></textarea>
@@ -82,14 +95,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     </form>
 
-    <?php foreach(array_reverse($board) as $value): ?>
-		<p>
-            <?php
-                echo $value[1];
-                echo '<br>';
-            ?>
-		</p>
-	<?php endforeach ?>
+    <form action="" method = "post" onsubmit ="return confirm_test()" >
+
+        <?php foreach(array_reverse($board) as $value): ?>
+
+            <?php if ($id === $value[1]): ?>
+                <p> <?php echo $value[2] ?> </p>
+                <input class = "btn" type = "submit" method = "post" name = "erase_submit" value = "消去">
+            <?php endif ?>
+
+	    <?php endforeach ?>
+
+
+    </form>
+
+
 
 
 <script src="js.js"></script>
